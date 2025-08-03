@@ -39,7 +39,7 @@ function Login() {
     }
     // Regular user login
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", {
+      const res = await axios.post("https://internship-task2-backend.onrender.com/api/users/login", {
         email,
         password,
       });
