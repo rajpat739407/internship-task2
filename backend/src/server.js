@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv'
 import cors from 'cors';
 import connectDB from './config/db.config.js'
-import User from './models/user.model.js';
+import Voluntier from './models/user.model.js';
 import userRoutes from './routes/user.routes.js';
 
 dotenv.config();

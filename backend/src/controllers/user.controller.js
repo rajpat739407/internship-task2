@@ -1,5 +1,5 @@
 import express from 'express';
-import User from '../models/user.model.js';
+import Voluntier from '../models/user.model.js';
 import bcrypt from 'bcrypt'
 import mongoose from "mongoose";
 
@@ -12,7 +12,7 @@ export const registerUser = async( req, res)=>{
     const { username, email, password, confirmPassword } = req.body;
     try{
         // check if user already exist
-        if(await User.findOne({ email })){
+        if(await Voluntier.findOne({ email })){
             return res.status(400).json({ message: 'User already exists' });
         }
 
@@ -24,7 +24,7 @@ export const registerUser = async( req, res)=>{
         // hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({
+        const newUser = new Voluntier({
             username,
             email,
             password: hashedPassword,
@@ -45,7 +45,7 @@ export const registerUser = async( req, res)=>{
 export const loginUser = async( req, res)=>{
     const {email, password}= req.body;
     try{
-        const user = await User.findOne({email});
+        const user = await Voluntier.findOne({email});
         const isMatch = await bcrypt.compare(password, user.password);
         if(!user){
             return res.status(404).json({ message: 'User not found' });
@@ -64,7 +64,7 @@ export const loginUser = async( req, res)=>{
 export const updateUserDetails = async (req, res)=>{
     const {userId , username, email, password} = req.body;
     try{
-        const user = await User.findById(userId);
+        const user = await Voluntier.findById(userId);
         if(!user){
             return res.status(404).json({message:"User Not Found"});
         }
@@ -92,7 +92,7 @@ export const deleteUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID" });
     }
 
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await Voluntier.findByIdAndDelete(id);
 
     if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -108,7 +108,7 @@ export const deleteUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   try {
-    const users = await User.find().select('-password'); // exclude passwords
+    const users = await Voluntier.find().select('-password'); // exclude passwords
     res.status(200).json(users);
   } catch (err) {
     console.error("Error in getAllUser:", err.message);

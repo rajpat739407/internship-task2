@@ -1,28 +1,65 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useState } from "react";
+import { FaEnvelope, FaUser } from "react-icons/fa";
+import { Link, useNavigate,  } from "react-router-dom";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
+  const adminData = [
+    {
+      email: "admin@gmail.com",
+      password: "admin123",
+    },
+  ];
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Check for admin credentials
+    const isAdmin = adminData.some(
+      (admin) => admin.email === email && admin.password === password
+    );
+
+    if (isAdmin) {
+      // Store admin user data
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email,
+          isAdmin: true,
+          name: "Admin",
+        })
+      );
+      navigate("/admin");
+      return;
+    }
+    // Regular user login
     try {
       const res = await axios.post("http://localhost:5000/api/users/login", {
         email,
-        password
+        password,
       });
 
-    //  const sotreDat= localStorage.setItem(res.data.user.username)
-      console.log("Login success:", res.data.user.username);
-
-      // You can store the token or user data here
-      // localStorage.setItem("token", res.data.token);
-      navigate('/dashboard'); // Redirect after successful login
+      // Store regular user data
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: res.data.user.email,
+          name: res.data.user.username,
+          isAdmin: false,
+        })
+      );
+      // console.log("Login success:", res.data.user.username);
+      navigate(from, { replace: true });
     } catch (err) {
-      console.error("Login failed:", err.response?.data?.message || err.message);
+      console.error(
+        "Login failed:",
+        err.response?.data?.message || err.message
+      );
       alert("Invalid email or password.");
     }
   };
@@ -42,7 +79,9 @@ function Login() {
           className="md:w-96 w-80 flex flex-col items-center justify-center"
           onSubmit={handleLogin}
         >
-          <h2 className="text-4xl text-gray-900 font-medium">Log in</h2>
+          <h2 className="text-4xl text-gray-900 font-bold font-serif">
+            Log in
+          </h2>
           <p className="text-sm text-gray-500 mt-3">
             Welcome back! Please sign in to continue
           </p>
@@ -53,6 +92,7 @@ function Login() {
           </div>
 
           <div className="flex items-center w-full border border-gray-300 h-12 rounded-full pl-6 gap-2">
+            <FaUser />
             <input
               type="email"
               placeholder="Email id"
@@ -64,6 +104,7 @@ function Login() {
           </div>
 
           <div className="flex items-center mt-6 w-full border border-gray-300 h-12 rounded-full pl-6 gap-2">
+            <FaEnvelope />
             <input
               type="password"
               placeholder="Password"
@@ -77,9 +118,13 @@ function Login() {
           <div className="w-full flex items-center justify-between mt-8 text-gray-500">
             <div className="flex items-center gap-2">
               <input className="h-4 w-4" type="checkbox" id="checkbox" />
-              <label className="text-sm" htmlFor="checkbox">Remember me</label>
+              <label className="text-sm" htmlFor="checkbox">
+                Remember me
+              </label>
             </div>
-            <Link to="/forgot-password" className="text-sm underline">Forgot password?</Link>
+            <Link to="/forgot-password" className="text-sm underline">
+              Forgot password?
+            </Link>
           </div>
 
           <button
