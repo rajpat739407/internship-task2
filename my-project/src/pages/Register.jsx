@@ -36,7 +36,7 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/register",
+        "https://internship-task2-backend.onrender.com/api/users/register",
         {
           username: formData.username,
           email: formData.email,
