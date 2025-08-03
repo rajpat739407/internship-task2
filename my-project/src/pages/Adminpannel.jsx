@@ -16,7 +16,7 @@ const AdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users");
+      const response = await axios.get("https://internship-task2-backend.onrender.com/api/users");
       setUsers(response.data);
     } catch (err) {
       toast.error("Failed to fetch users");
@@ -40,7 +40,7 @@ const AdminPanel = () => {
     setIsLoading(true);
     try {
       if (editingUserId) {
-        await axios.put(`http://localhost:5000/api/users/update`, {
+        await axios.put(`https://internship-task2-backend.onrender.com/api/users/update`, {
           userId: editingUserId,
           username: formData.username,
           email: formData.email,
@@ -48,7 +48,7 @@ const AdminPanel = () => {
         });
         toast.success("User updated successfully");
       } else {
-        await axios.post("http://localhost:5000/api/users/register", {
+        await axios.post("https://internship-task2-backend.onrender.com/api/users/register", 
           username: formData.username,
           email: formData.email,
           password: formData.password,
@@ -79,7 +79,7 @@ const AdminPanel = () => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await axios.delete(`https://internship-task2-backend.onrender.com/api/users/${id}`);
       toast.success("User deleted successfully");
       fetchUsers();
     } catch (err) {
