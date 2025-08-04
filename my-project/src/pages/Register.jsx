@@ -22,47 +22,35 @@ function Register() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    // Password validation
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match");
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const response = await axios.post(
-        "https://internship-task2-backend.onrender.com/api/users/register",
-        {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword
-        }
-      );
-      
-      // Clear form and navigate to login
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-      navigate("/login");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || 
-        err.message || 
-        "Registration failed. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    await axios.post(
+      "https://internship-task2-backend.onrender.com/api/users/register",
+      formData  // Send the entire formData object
+    );
+    
+    navigate("/login");
+  } catch (err) {
+    setError(
+      err.response?.data?.message || 
+      err.message || 
+      "Registration failed. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
