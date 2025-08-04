@@ -35,35 +35,51 @@ const AdminPanel = () => {
     }));
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      if (editingUserId) {
-        await axios.put(`https://internship-task2-backend.onrender.com/api/users/update`, {
-          userId: editingUserId,
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-        });
-        toast.success("User updated successfully");
-      } else {
-        await axios.post("https://internship-task2-backend.onrender.com/api/users/register", {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-        });
-        toast.success("User created successfully");
-      }
-      fetchUsers();
-      resetForm();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Operation failed");
-    } finally {
-      setIsLoading(false);
+// ... existing code ...
+
+const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  
+  try {
+    if (editingUserId) {
+      await axios.put(`https://internship-task2-backend.onrender.com/api/users/update`, {
+        userId: editingUserId,
+        ...formData
+      });
+      toast.success("User updated successfully");
+    } else {
+      await axios.post(
+        "https://internship-task2-backend.onrender.com/api/users/register", 
+        formData
+      );
+      toast.success("User created successfully");
     }
-  };
+    
+    // Refresh user list without full page reload
+    const updatedUsers = await axios.get("https://internship-task2-backend.onrender.com/api/users");
+    setUsers(updatedUsers.data);
+    
+    resetForm();
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Operation failed");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+// Add this function to handle immediate updates
+const resetForm = () => {
+  setFormData({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  setEditingUserId(null);
+};
+
+// ... existing code ...
 
   const handleEdit = (user) => {
     setEditingUserId(user._id);
