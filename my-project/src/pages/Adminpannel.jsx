@@ -48,7 +48,7 @@ const AdminPanel = () => {
         });
         toast.success("User updated successfully");
       } else {
-        await axios.post("https://internship-task2-backend.onrender.com/api/users/register", 
+        await axios.post("https://internship-task2-backend.onrender.com/api/users/register", {
           username: formData.username,
           email: formData.email,
           password: formData.password,
